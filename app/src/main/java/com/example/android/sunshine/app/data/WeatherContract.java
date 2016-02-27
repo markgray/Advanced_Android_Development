@@ -19,7 +19,8 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.text.format.Time;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Defines table and column names for the weather database.
@@ -47,12 +48,24 @@ public class WeatherContract {
     // To make it easy to query for the exact date, we normalize all dates that go into
     // the database to the start of the the Julian day at UTC.
     public static long normalizeDate(long startDate) {
-        // normalize the start date to the beginning of the (UTC) day
-        Time time = new Time();
-        time.set(startDate);
-        int julianDay = Time.getJulianDay(startDate, time.gmtoff);
-        return time.setJulianDay(julianDay);
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTimeInMillis(startDate);
+        gc.set(Calendar.HOUR_OF_DAY, 0);
+        gc.set(Calendar.MINUTE, 0);
+        gc.set(Calendar.SECOND, 0);
+        gc.set(Calendar.MILLISECOND, 0);
+        return gc.getTimeInMillis();
     }
+
+//    // To make it easy to query for the exact date, we normalize all dates that go into
+//    // the database to the start of the the Julian day at UTC.
+//    public static long normalizeDate(long startDate) {
+//        // normalize the start date to the beginning of the (UTC) day
+//        Time time = new Time();
+//        time.set(startDate);
+//        int julianDay = Time.getJulianDay(startDate, time.gmtoff);
+//        return time.setJulianDay(julianDay);
+//    }
 
     /* Inner class that defines the table contents of the location table */
     public static final class LocationEntry implements BaseColumns {
@@ -62,8 +75,8 @@ public class WeatherContract {
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LOCATION;
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LOCATION;
+//        public static final String CONTENT_ITEM_TYPE =
+//                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LOCATION;
 
         // Table name
         public static final String TABLE_NAME = "location";
