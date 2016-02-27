@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+@SuppressWarnings({"NullableProblems", "ConstantConditions"})
 public class WeatherProvider extends ContentProvider {
 
     // The URI Matcher used by this content provider.
@@ -256,7 +257,7 @@ public class WeatherProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(Uri uri, String selection, String[] selectionArgs) throws NullPointerException {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
@@ -276,6 +277,7 @@ public class WeatherProvider extends ContentProvider {
         }
         // Because a null deletes all rows
         if (rowsDeleted != 0) {
+            //noinspection ConstantConditions
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
@@ -310,6 +312,7 @@ public class WeatherProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsUpdated != 0) {
+            //noinspection ConstantConditions
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
@@ -335,6 +338,7 @@ public class WeatherProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
+                //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
             default:
