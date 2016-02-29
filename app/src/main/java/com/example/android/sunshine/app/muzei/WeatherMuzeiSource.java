@@ -59,6 +59,7 @@ public class WeatherMuzeiSource extends MuzeiArtSource {
                 location, System.currentTimeMillis());
         Cursor cursor = getContentResolver().query(weatherForLocationUri, FORECAST_COLUMNS, null,
                 null, WeatherContract.WeatherEntry.COLUMN_DATE + " ASC");
+        assert cursor != null;
         if (cursor.moveToFirst()) {
             int weatherId = cursor.getInt(INDEX_WEATHER_ID);
             String desc = cursor.getString(INDEX_SHORT_DESC);
