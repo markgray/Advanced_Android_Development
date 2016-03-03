@@ -15,10 +15,9 @@
  */
 package com.example.android.sunshine.app;
 
-import android.os.Build;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +36,7 @@ public class ItemChoiceManager {
     private int mChoiceMode;
 
     private RecyclerView.Adapter mAdapter;
+    @SuppressWarnings("unused")
     private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
@@ -46,10 +46,9 @@ public class ItemChoiceManager {
         }
     };
 
+    @SuppressWarnings("unused")
     private ItemChoiceManager() {
     }
-
-    ;
 
     public ItemChoiceManager(RecyclerView.Adapter adapter) {
         mAdapter = adapter;
@@ -72,7 +71,7 @@ public class ItemChoiceManager {
      * If there is a value for a given key, the checked state for that ID is true
      * and the value holds the last known position in the adapter for that id.
      */
-    LongSparseArray<Integer> mCheckedIdStates = new LongSparseArray<Integer>();
+    LongSparseArray<Integer> mCheckedIdStates = new LongSparseArray<>();
 
     public void onClick(RecyclerView.ViewHolder vh) {
         if (mChoiceMode == AbsListView.CHOICE_MODE_NONE)
@@ -103,6 +102,7 @@ public class ItemChoiceManager {
                 // We directly call onBindViewHolder here because notifying that an item has
                 // changed on an item that has the focus causes it to lose focus, which makes
                 // keyboard navigation a bit annoying
+                //noinspection unchecked
                 mAdapter.onBindViewHolder(vh, position);
                 break;
             }
@@ -112,6 +112,7 @@ public class ItemChoiceManager {
                 // We directly call onBindViewHolder here because notifying that an item has
                 // changed on an item that has the focus causes it to lose focus, which makes
                 // keyboard navigation a bit annoying
+                //noinspection unchecked
                 mAdapter.onBindViewHolder(vh, position);
                 break;
             }
@@ -199,7 +200,7 @@ public class ItemChoiceManager {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         byte[] states = savedInstanceState.getByteArray(SELECTED_ITEMS_KEY);
         if ( null != states ) {
-            Parcel inParcel = Parcel.obtain();
+            @SuppressLint("Recycle") Parcel inParcel = Parcel.obtain();
             inParcel.unmarshall(states, 0, states.length);
             inParcel.setDataPosition(0);
             mCheckStates = inParcel.readSparseBooleanArray();
