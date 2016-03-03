@@ -60,7 +60,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private boolean mHoldForTransition;
     private long mInitialSelectedDate = -1;
 
-    private static final String SELECTED_KEY = "selected_position";
+//    private static final String SELECTED_KEY = "selected_position";
 
     private static final int FORECAST_LOADER = 0;
     // For the forecast view we're showing only a small subset of the stored data.
@@ -85,12 +85,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
-    static final int COL_WEATHER_ID = 0;
+//    static final int COL_WEATHER_ID = 0;
     static final int COL_WEATHER_DATE = 1;
-    static final int COL_WEATHER_DESC = 2;
+//    static final int COL_WEATHER_DESC = 2;
     static final int COL_WEATHER_MAX_TEMP = 3;
     static final int COL_WEATHER_MIN_TEMP = 4;
-    static final int COL_LOCATION_SETTING = 5;
+//    static final int COL_LOCATION_SETTING = 5;
     static final int COL_WEATHER_CONDITION_ID = 6;
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
@@ -104,7 +104,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        public void onItemSelected(Uri dateUri, ForecastAdapter.ForecastAdapterViewHolder vh);
+        void onItemSelected(Uri dateUri, ForecastAdapter.ForecastAdapterViewHolder vh);
     }
 
     public ForecastFragment() {
@@ -154,6 +154,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(activity, attrs, savedInstanceState);
@@ -404,6 +405,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
      */
     private void updateEmptyView() {
         if ( mForecastAdapter.getItemCount() == 0 ) {
+            //noinspection ConstantConditions
             TextView tv = (TextView) getView().findViewById(R.id.recyclerview_forecast_empty);
             if ( null != tv ) {
                 // if cursor is empty, why? do we have an invalid location
