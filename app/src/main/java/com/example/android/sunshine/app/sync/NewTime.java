@@ -13,7 +13,7 @@ public class NewTime {
     public Time time;
     public long gmtoff;
 
-    NewTime() {
+    public NewTime() {
         time = new Time();
         gmtoff = time.gmtoff;
     }

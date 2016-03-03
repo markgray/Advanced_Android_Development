@@ -15,14 +15,15 @@
  */
 package com.example.android.sunshine.app;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
-import android.text.format.Time;
 
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+import com.example.android.sunshine.app.sync.NewTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -70,7 +71,7 @@ public class Utility {
     public static String formatTemperature(Context context, double temperature) {
         // Data stored in Celsius by default.  If user prefers to see in Fahrenheit, convert
         // the values here.
-        String suffix = "\u00B0";
+//        String suffix = "\u00B0";
         if (!isMetric(context)) {
             temperature = (temperature * 1.8) + 32;
         }
@@ -79,6 +80,7 @@ public class Utility {
         return String.format(context.getString(R.string.format_temperature), temperature);
     }
 
+    @SuppressWarnings("unused")
     static String formatDate(long dateInMilliseconds) {
         Date date = new Date(dateInMilliseconds);
         return DateFormat.getDateInstance().format(date);
@@ -103,17 +105,18 @@ public class Utility {
         // For the next 5 days: "Wednesday" (just the day name)
         // For all days after that: "Mon Jun 8"
 
-        Time time = new Time();
+        NewTime time = new NewTime();
         time.setToNow();
         long currentTime = System.currentTimeMillis();
-        int julianDay = Time.getJulianDay(dateInMillis, time.gmtoff);
-        int currentJulianDay = Time.getJulianDay(currentTime, time.gmtoff);
+        int julianDay = NewTime.getJulianDay(dateInMillis, time.gmtoff);
+        int currentJulianDay = NewTime.getJulianDay(currentTime, time.gmtoff);
 
         // If the date we're building the String for is today's date, the format
         // is "Today, June 24"
         if (displayLongToday && julianDay == currentJulianDay) {
             String today = context.getString(R.string.today);
             int formatId = R.string.format_full_friendly_date;
+            //noinspection RedundantStringFormatCall
             return String.format(context.getString(
                     formatId,
                     today,
@@ -123,7 +126,7 @@ public class Utility {
             return getDayName(context, dateInMillis);
         } else {
             // Otherwise, use the form "Mon Jun 3"
-            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
             return shortenedDateFormat.format(dateInMillis);
         }
     }
@@ -140,6 +143,7 @@ public class Utility {
 
         String day = getDayName(context, dateInMillis);
         int formatId = R.string.format_full_friendly_date;
+        //noinspection RedundantStringFormatCall
         return String.format(context.getString(
                 formatId,
                 day,
@@ -152,25 +156,25 @@ public class Utility {
      *
      * @param context Context to use for resource localization
      * @param dateInMillis The date in milliseconds
-     * @return
+     * @return Day name e.g. today, tomorrow, wednesday
      */
     public static String getDayName(Context context, long dateInMillis) {
         // If the date is today, return the localized version of "Today" instead of the actual
         // day name.
 
-        Time t = new Time();
+        NewTime t = new NewTime();
         t.setToNow();
-        int julianDay = Time.getJulianDay(dateInMillis, t.gmtoff);
-        int currentJulianDay = Time.getJulianDay(System.currentTimeMillis(), t.gmtoff);
+        int julianDay = NewTime.getJulianDay(dateInMillis, t.gmtoff);
+        int currentJulianDay = NewTime.getJulianDay(System.currentTimeMillis(), t.gmtoff);
         if (julianDay == currentJulianDay) {
             return context.getString(R.string.today);
         } else if ( julianDay == currentJulianDay +1 ) {
             return context.getString(R.string.tomorrow);
         } else {
-            Time time = new Time();
+            NewTime time = new NewTime();
             time.setToNow();
             // Otherwise, the format is just the day of the week (e.g "Wednesday".
-            SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
             return dayFormat.format(dateInMillis);
         }
     }
@@ -182,15 +186,18 @@ public class Utility {
      *                in Utility.DATE_FORMAT
      * @return The day in the form of a string formatted "December 6"
      */
-    public static String getFormattedMonthDay(Context context, long dateInMillis ) {
-        Time time = new Time();
+    public static String getFormattedMonthDay(@SuppressWarnings("UnusedParameters") Context context, long dateInMillis ) {
+        NewTime time = new NewTime();
         time.setToNow();
-        SimpleDateFormat dbDateFormat = new SimpleDateFormat(Utility.DATE_FORMAT);
-        SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMMM dd");
+        //noinspection unused
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dbDateFormat = new SimpleDateFormat(Utility.DATE_FORMAT);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat monthDayFormat = new SimpleDateFormat("MMMM dd");
+        //noinspection UnnecessaryLocalVariable,UnnecessaryLocalVariable
         String monthDayString = monthDayFormat.format(dateInMillis);
         return monthDayString;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static String getFormattedWind(Context context, float windSpeed, float degrees) {
         int windFormat;
         if (Utility.isMetric(context)) {
