@@ -26,7 +26,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.format.Time;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
@@ -108,7 +107,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         BufferedReader reader = null;
 
         // Will contain the raw JSON response as a string.
-        String forecastJsonStr = null;
+        String forecastJsonStr;
 
         String format = "json";
         String units = "metric";
@@ -158,7 +157,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
                 return;
@@ -170,7 +169,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                 // But it does make debugging a *lot* easier if you print out the completed
                 // buffer for debugging.
-                buffer.append(line + "\n");
+                buffer.append(line).append("\n");
             }
 
             if (buffer.length() == 0) {
@@ -201,7 +200,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             }
         }
-        return;
     }
 
     /**
@@ -251,6 +249,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             JSONObject forecastJson = new JSONObject(forecastJsonStr);
+            //noinspection unused
             Context context = getContext();
 
             // do we have an error?
@@ -355,7 +354,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 cVVector.add(weatherValues);
             }
 
-            int inserted = 0;
             // add to database
             if ( cVVector.size() > 0 ) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
@@ -399,6 +397,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
     private void notifyWeather() {
         Context context = getContext();
         //checking the last update and notify if it' the first of the day
@@ -421,6 +420,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 // we'll query our contentProvider, as always
                 Cursor cursor = context.getContentResolver().query(weatherUri, NOTIFY_WEATHER_PROJECTION, null, null, null);
 
+                assert cursor != null;
                 if (cursor.moveToFirst()) {
                     int weatherId = cursor.getInt(INDEX_WEATHER_ID);
                     double high = cursor.getDouble(INDEX_MAX_TEMP);
@@ -466,6 +466,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     // NotificationCompatBuilder is a very convenient way to build backward-compatible
                     // notifications.  Just throw in some data.
+                    //noinspection deprecation
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(getContext())
                                     .setColor(resources.getColor(R.color.primary_light))
@@ -526,6 +527,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 new String[]{locationSetting},
                 null);
 
+        assert locationCursor != null;
         if (locationCursor.moveToFirst()) {
             int locationIdIndex = locationCursor.getColumnIndex(WeatherContract.LocationEntry._ID);
             locationId = locationCursor.getLong(locationIdIndex);
@@ -653,6 +655,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
      * @param c Context to get the PreferenceManager from.
      * @param locationStatus The IntDef value to set
      */
+    @SuppressLint("CommitPrefEdits")
     static private void setLocationStatus(Context c, @LocationStatus int locationStatus){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor spe = sp.edit();
