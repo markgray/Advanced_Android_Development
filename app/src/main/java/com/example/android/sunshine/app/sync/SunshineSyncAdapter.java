@@ -281,6 +281,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
 
             // Insert the new weather information into the database
+            //noinspection Convert2Diamond
             Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.length());
 
             // OWM returns daily forecasts based upon the local time of the city that is being
@@ -291,14 +292,14 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             // current day, we're going to take advantage of that to get a nice
             // normalized UTC date for all of our weather.
 
-            Time dayTime = new Time();
+            NewTime dayTime = new NewTime();
             dayTime.setToNow();
 
             // we start at the day returned by local time. Otherwise this is a mess.
-            int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
+            int julianStartDay = NewTime.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
 
             // now we work exclusively in UTC
-            dayTime = new Time();
+            dayTime = new NewTime();
 
             for(int i = 0; i < weatherArray.length(); i++) {
                 // These are the values that will be collected.
