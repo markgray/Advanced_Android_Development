@@ -140,9 +140,11 @@ public class WeatherContract {
         public static final String COLUMN_DEGREES = "degrees";
 
         /**
+         * Appends the given ID to the end of the weather db path.
          *
-         * @param id
-         * @return
+         * @param id to append
+         *
+         * @return a new URI with the given ID appended to the end of the weather path
          */
         public static Uri buildWeatherUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -162,6 +164,13 @@ public class WeatherContract {
             return CONTENT_URI.buildUpon().appendPath(locationSetting).build();
         }
 
+        /**
+         * Builds a query for a location and startdate
+         *
+         * @param locationSetting String for location
+         * @param startDate startdate in miliseconds
+         * @return Content uri for requested data
+         */
         public static Uri buildWeatherLocationWithStartDate(
                 String locationSetting, long startDate) {
             long normalizedDate = normalizeDate(startDate);
@@ -169,19 +178,44 @@ public class WeatherContract {
                     .appendQueryParameter(COLUMN_DATE, Long.toString(normalizedDate)).build();
         }
 
+        /**
+         * Generate a query for a location and particular date
+         *
+         * @param locationSetting String containing location
+         * @param date Date of interest in miliseconds
+         * @return uri encoding location and date of interest
+         */
         public static Uri buildWeatherLocationWithDate(String locationSetting, long date) {
             return CONTENT_URI.buildUpon().appendPath(locationSetting)
                     .appendPath(Long.toString(normalizeDate(date))).build();
         }
 
+        /**
+         * Extracts location string from uri
+         *
+         * @param uri query we want to parse
+         * @return string containing location being queried
+         */
         public static String getLocationSettingFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
 
+        /**
+         * Extracts date in miliseconds from query uri
+         *
+         * @param uri query we want to parse
+         * @return Date in miliseconds from query
+         */
         public static long getDateFromUri(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(2));
         }
 
+        /**
+         * Extracts startdate from query passed it
+         *
+         * @param uri query we want to parse
+         * @return startdate in miliseconds
+         */
         public static long getStartDateFromUri(Uri uri) {
             String dateString = uri.getQueryParameter(COLUMN_DATE);
             if (null != dateString && dateString.length() > 0)
