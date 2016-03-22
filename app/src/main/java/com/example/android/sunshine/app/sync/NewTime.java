@@ -26,11 +26,13 @@ public class NewTime {
     }
 
     public void setToNow() {
+        gc.setTimeInMillis(System.currentTimeMillis());
         time.setToNow();
     }
 
 
     public void set(long millis) {
+        gc.setTimeInMillis(millis);
         time.set(millis);
     }
 
@@ -42,3 +44,4 @@ public class NewTime {
         return time.setJulianDay(julianDay);
     }
 }
+
